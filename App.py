@@ -1,20 +1,23 @@
 from Activity import Activity
+from Interface import Interface
 import tkinter as tk
 
 ACTIVITY_LIST = []
+ACTIVITY_DICT = {}
 
-def forward_pass(activities: list):
-  for activity in activities:
+def forward_pass():
+  for activity in ACTIVITY_LIST:
     activity.calculate_early_start()
     activity.calculate_early_finish()
 
-def backward_pass(activities: list):
+def backward_pass():
+  activities_copy = ACTIVITY_LIST
   critical_path = []
   _activities = []
   # reverses the list to traverse it from finish to start
-  activities.reverse()
+  activities_copy.reverse()
   # traverses the list
-  for activity in activities:
+  for activity in activities_copy:
     if is_end(activity):
       activity.late_finish = activity.early_finish
       activity.late_start = activity.early_start
@@ -29,30 +32,28 @@ def create_activity(
     number: str,
     duration: int,
     description: str,
-    activity_dict: dict,
     predecessors: list=[]
   ):
-  if activity_exists(number, activity_dict): return 'Ya existe la actividad'
-  return Activity(number, duration, description, predecessors)
+  if activity_exists(number): return 'Ya existe la actividad'
+  ACTIVITY_LIST.append(Activity(number, duration, description, predecessors))
+  ACTIVITY_DICT[number] = predecessors
+  return 'Actividad agregada'
 
-def populate_dict(dict: dict, activities: list):
-  for activity in activities:
-    dict[activity.number] = activity.predecessors
+def activity_exists(number: str):
+  return number in ACTIVITY_DICT.keys()
 
-  return dict
-
-def activity_exists(number: str, activity_dict: dict):
-  return number in activity_dict.keys()
-
-def is_end(activity: Activity, activity_dict: dict):
-  for item in activity_dict.items():
-    if item.number == activity.number:
-      return False
+def is_end(activity: Activity):
+  for item in ACTIVITY_DICT.values():
+    for sub_item in item:
+      if sub_item.number == activity.number:
+        return False
 
   return True
 
 def App():
-  list_of_activities = ACTIVITY_LIST
-  
-  activity_dict = populate_dict({}, )
+  interface = Interface()
+  interface.create_window(ACTIVITY_DICT, ACTIVITY_LIST, create_activity)
+  interface.initialize_screen()
+
+App()
 
