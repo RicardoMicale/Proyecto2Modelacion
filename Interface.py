@@ -29,7 +29,7 @@ class Interface():
     self.critical_path = critical_path
     self.get_slack = get_slack
 
-    self.root.geometry("200x200+20+20")
+    self.root.geometry("200x250+20+20")
     self.root.configure(bg="lightblue")
 
     # creates window elements
@@ -45,6 +45,9 @@ class Interface():
 
     # button to visualize slack
     tk.Button(master=self.root, text="Ver holguras", command=self.slack_window).grid(row=8, column=1, padx=10, pady=10, sticky="w")
+
+    # button to visualize activities
+    tk.Button(master=self.root, text="Ver actividades", command=self.info_window).grid(row=10, column=1, padx=10, pady=10, sticky="w")
 
   def activity_window(self):
     # creates window for the activity creation
@@ -176,4 +179,16 @@ class Interface():
 
     master.root.mainloop()
 
+  def info_window(self):
+    activity_string = "" if len(self.activity_list) > 0 else "No hay actividades"
+
+    for activity in self.activity_list:
+      activity_string += f'{activity.print()} \n'
+
+    master = Interface()
+
+    master.root.title("Actividades")
+    master.root.configure(bg="lightblue")
+
+    tk.Label(master.root, text=activity_string, bg="lightblue").pack()
 

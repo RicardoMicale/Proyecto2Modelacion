@@ -41,6 +41,11 @@ class Activity():
 
   def print(self):
     predecessors = ''
-    for item in self.predecessors:
+    for i, item in enumerate(self.predecessors):
+      if i == len(predecessors) - 1:
+        predecessors += f'{item.number}'
+        continue
+
       predecessors += f'{item.number}, '
-    print(f"Actividad Act. {self.number}, duración: {self.duration}, descripción: {self.description}, predecesores: {predecessors}")
+
+    return f"Actividad Act. {self.number}, duración: {self.duration}, descripción: {self.description}, predecesores: {predecessors}"

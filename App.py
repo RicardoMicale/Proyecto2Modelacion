@@ -78,5 +78,3 @@ def App():
   interface.create_window(ACTIVITY_DICT, ACTIVITY_LIST, create_activity, critical_path, get_slack)
   interface.initialize_screen()
 
-App()
-
