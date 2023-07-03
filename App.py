@@ -4,6 +4,7 @@ import tkinter as tk
 
 ACTIVITY_LIST = []
 ACTIVITY_DICT = {}
+CRITICAL_PATH = []
 
 def forward_pass():
   for activity in ACTIVITY_LIST:
@@ -12,8 +13,10 @@ def forward_pass():
 
 def backward_pass():
   activities_copy = ACTIVITY_LIST
-  critical_path = []
   _activities = []
+
+  if len(CRITICAL_PATH) > 0:
+    CRITICAL_PATH.clear()
   # reverses the list to traverse it from finish to start
   activities_copy.reverse()
   # traverses the list
@@ -25,8 +28,8 @@ def backward_pass():
     activity.calculate_late_finish()
     activity.calculate_slack()
     _activities.append(activity)
-    # if there is no slack, then it ir in the critical path
-    if activity.slack == 0: critical_path.append(activity)
+    # if there is no slack, then it is in the critical path
+    if activity.slack == 0: CRITICAL_PATH.append(activity.number)
 
 def create_activity(
     number: str,
@@ -50,9 +53,29 @@ def is_end(activity: Activity):
 
   return True
 
+def critical_path():
+  if len(ACTIVITY_LIST) == 0:
+    return []
+
+  if len(ACTIVITY_LIST) == 1:
+    return [ACTIVITY_LIST[0].number]
+  forward_pass()
+  backward_pass()
+  critical_path = CRITICAL_PATH
+  return critical_path
+
+def get_slack():
+  activities_with_slack = []
+
+  for activity in ACTIVITY_LIST:
+    if activity.slack != 0:
+      activities_with_slack.append(activity)
+
+  return activities_with_slack
+
 def App():
   interface = Interface()
-  interface.create_window(ACTIVITY_DICT, ACTIVITY_LIST, create_activity)
+  interface.create_window(ACTIVITY_DICT, ACTIVITY_LIST, create_activity, critical_path, get_slack)
   interface.initialize_screen()
 
 App()

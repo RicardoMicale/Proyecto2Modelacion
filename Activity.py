@@ -40,4 +40,7 @@ class Activity():
     self.slack = self.late_finish - self.early_finish
 
   def print(self):
-    print(f"Actividad Act. {self.number}, duración: {self.duration}, descripción: {self.description}")
+    predecessors = ''
+    for item in self.predecessors:
+      predecessors += f'{item.number}, '
+    print(f"Actividad Act. {self.number}, duración: {self.duration}, descripción: {self.description}, predecesores: {predecessors}")
